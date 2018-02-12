@@ -1,0 +1,87 @@
+﻿@model DOSBPM.Models.QualifyingInfo
+
+@{
+    ViewBag.Title = "Qualifying Information";
+}
+
+<h2>Qualifying Questions</h2>
+<br />
+<br />
+<div class="container-fluid">
+
+	@using (Html.BeginForm("Index", "QualifyingInfo", FormMethod.Post))
+	{
+		@Html.AntiForgeryToken()
+
+		<div class="form-group">
+			<div class="col-md-12">
+
+				<label class="required">
+					Please select your transaction Type
+				</label><br />
+
+				 
+				<div>
+					@Html.DropDownListFor(model => model.TransactionType,(List<SelectListItem>) ViewBag.Infos, new { @class = "form-control", id = "ddTransactionType" })
+					@*@Html.DropDownListFor(model => model.TransactionType, new SelectList(TransTypes), "-- Select --", new { @class = "", id = "ddown" })*@
+
+				</div>
+
+				<div class="checkIt" id="divBPA" style="padding-top:20px;display:block">
+
+					<label class="required">Please select one of the following (Project Type)</label><br />
+					<input type="checkbox" class="checkIt" id="chkEB" /> Existing Building&nbsp;&nbsp;
+
+					<input type="checkbox" class="checkIt" id="chkNB" />   New Construction
+
+					@*@Html.CheckBox("checkbox1", new { @class="check1"}) Existing Building &nbsp;&nbsp;*@
+					@*@Html.CheckBox("checkbox2", new { @class = "check1" })   New Construction*@
+
+				</div>
+
+				<div id="divDPA" style="padding-top:20px;display:none">
+					<label class="required">Please select one of the following (Project Type)</label><br />
+					<input type="checkbox" class="" id="chkPD" /> Partial Demolition &nbsp;&nbsp;
+					<input type="checkbox" class="" id="chkED" />  Entire Building Demolition
+
+				</div>
+
+			</div>
+		</div>
+
+		<div class="bottom" style="padding-top: 5em">
+			<div class="col-md-9"></div>
+			@*<div class="col-lg-1">
+					@Html.ActionLink("Next", "Index", "QualifyingQuestions", null, new { @class = "NextBtn" })
+				</div>*@
+			<div class="col-md-3">
+				<input type="submit" id="btnNext" class="NextBtn btn btn-default" style="background-color:#a90606; color:white" value="Next" />
+
+			</div>
+		</div>
+	}
+</div>
+
+           
+
+
+            @******************* *@
+            <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+            <script src="~/Scripts/jquery-3.2.1.min.js"></script>
+            <script src="~/Scripts/BPM_Js/QualifyingInfo.js"></script>
+            <script type="text/javascript">
+
+                //qualify.init();
+
+
+            </script>
+
+
+
+
+
+
+
+
+
+
