@@ -3,25 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity;
+using System.Configuration;
+using System.Data.SqlClient;
 using DOSBPM.Models;
 using Newtonsoft.Json;
 
 namespace DOSBPM.Controllers
 {
-    public class QualifyingInfoController : Controller
+    public class PropertyOwnerInfoController : BaseController
     {
+        // GET: PropertyOwnerInfo
         DEV_CODES_APPDBEntities db = new DEV_CODES_APPDBEntities();
 
-        // GET: QualifyingInfo
         public ActionResult Index()
         {
-            Log.Info("Qualifying Info Controller Started");
-            //While Loading Deserialization
-            BuildingApplication buildApp = null;
-            QualifyingInfo qualifyingInfo = new QualifyingInfo();
+            BuildingApplication buildApp = new BuildingApplication();
+             PropertyOwnerInfo propertyOwnerInfo = new PropertyOwnerInfo();
 
-           
-            if(Session["BuildingApplication"] != null)
+             if (Session["BuildingApplication"] != null)
             {
                 buildApp = (BuildingApplication)Session["BuildingApplication"];
             }
@@ -29,31 +29,36 @@ namespace DOSBPM.Controllers
             {
                 string jsonData = string.Empty;
                 temp_BPMData objtemp_BPMData = db.temp_BPMData.FirstOrDefault(x => x.AppID == "1" && x.UserID == "1");
-                if (objtemp_BPMData != null)
+                if(objtemp_BPMData!=null)
                 {
                     jsonData = objtemp_BPMData.JsonData;
                 }
-
                 buildApp = JsonConvert.DeserializeObject<BuildingApplication>(jsonData);
             }
-
-            if(buildApp == null)
+             if(buildApp == null)
             {
                 buildApp = new BuildingApplication();
             }
 
-            ViewBag.info = new List<SelectListItem> { 
-                                                        new SelectListItem {Value = "1", Text="Building Permit Application", Selected = (buildApp.QualifyingInfoData?.TransactionType=="1")},
-                                                        new SelectListItem {Value = "2", Text="Demolition Permit Application", Selected=(buildApp.QualifyingInfoData?.TransactionType=="2")}
-                                                        
-                                                     };
+            ViewBag.info = new List<SelectListItem> {
+                                                        new SelectListItem {Value="Property Owner Organization", Text="Property Owner Organization", Selected=(buildApp.PropertyOwnerInfoData?.PropertyOwnerType=="Property Owner Organization")},
+                                                        new SelectListItem {Value="Property Owner Organization", Text="Property Owner Individual", Selected=(buildApp.PropertyOwnerInfoData?.PropertyOwnerType=="Property Owner Individual")}
 
-            return View(buildApp.QualifyingInfoData);
+                                                    };
+
+            ViewBag.StatesList = GetStates();
+            ViewBag.CountryList = GetCountries();
+            ViewBag.CountiesList = GetCounties();
+
+          //  buildApp.PropertyOwnerInfoData = ;
+
+            return View(buildApp.PropertyOwnerInfoData);
+
+            
         }
         [HttpPost]
-        public ActionResult Index(QualifyingInfo qualifyingInfo)
+        public ActionResult Index(PropertyOwnerInfo propertyOwnerInfo)
         {
-            //store in session
             BuildingApplication buildApp = null;
             if(Session["BuildingApplication"]!= null)
             {
@@ -63,7 +68,8 @@ namespace DOSBPM.Controllers
             {
                 buildApp = new BuildingApplication();
             }
-            buildApp.QualifyingInfoData = qualifyingInfo;
+
+            buildApp.PropertyOwnerInfoData = propertyOwnerInfo;
             Session["BuildingApplication"] = buildApp;
 
             string buildAppString = JsonConvert.SerializeObject(buildApp);
@@ -87,9 +93,7 @@ namespace DOSBPM.Controllers
                 db.SaveChanges();
             }
 
-
-           
-            return RedirectToAction("Index", "PropertyOwnerInfo");
+            return RedirectToAction("Index", "PropertyOwnerContact");
         }
     }
 }
